@@ -20,6 +20,9 @@ import Toolbar from './Toolbar';
 import omit from 'lodash/object/omit';
 import defaults from 'lodash/object/defaults';
 
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
+
 function viewNames(_views){
   return !Array.isArray(_views) ? Object.keys(_views) : _views
 }
@@ -424,4 +427,4 @@ let Calendar = React.createClass({
   }
 });
 
-export default uncontrollable(Calendar, { view: 'onView', date: 'onNavigate', selected: 'onSelectEvent' })
+export default DragDropContext(HTML5Backend)(uncontrollable(Calendar, { view: 'onView', date: 'onNavigate', selected: 'onSelectEvent' }))

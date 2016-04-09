@@ -10,6 +10,9 @@ import { notify } from './utils/helpers';
 import { accessor } from './utils/propTypes';
 import { accessor as get } from './utils/accessors';
 
+import DaySlotEvent from './DaySlotEvent';
+import DaySlotContainer from './DaySlotContainer';
+
 function snapToSlot(date, step){
   var roundTo = 1000 * 60 * step;
   return new Date(Math.floor(date.getTime() / roundTo) * roundTo)
@@ -17,23 +20,6 @@ function snapToSlot(date, step){
 
 function positionFromDate(date, min, step){
   return dates.diff(min, dates.merge(min, date), 'minutes')
-}
-
-function overlaps(event, events, { startAccessor, endAccessor }, last) {
-  let eStart = get(event, startAccessor);
-  let offset = last;
-
-  function overlap(eventB){
-    return dates.lt(eStart, get(eventB, endAccessor))
-  }
-
-  if (!events.length) return last - 1
-  events.reverse().some(prevEvent => {
-    if (overlap(prevEvent)) return true
-    offset = offset - 1
-  })
-
-  return offset
 }
 
 let DaySlot = React.createClass({
@@ -87,9 +73,7 @@ let DaySlot = React.createClass({
     let children = [];
 
     for (var i = 0; i < numSlots; i++) {
-      children.push(
-        <div key={i} className='rbc-time-slot'/>
-      )
+      children.push(Math.random())
     }
 
     this._totalMin = totalMin;
@@ -104,7 +88,13 @@ let DaySlot = React.createClass({
 
     return (
       <div {...props} className={cn('rbc-day-slot', props.className)}>
-        { children }
+        { 
+          children.map((child, idx) => {
+            return (
+              <DaySlotContainer key={child} />
+            )
+          }) 
+        }
         { this.renderEvents(numSlots, totalMin) }
         {
           selecting &&
@@ -130,42 +120,8 @@ let DaySlot = React.createClass({
     events.sort((a, b) => +get(a, startAccessor) - +get(b, startAccessor))
 
     return events.map((event, idx) => {
-      let start = get(event, startAccessor)
-      let end = get(event, endAccessor)
-      let startSlot = positionFromDate(start, min, step);
-      let endSlot = positionFromDate(end, min, step);
-
-      lastLeftOffset = Math.max(0,
-        overlaps(event, events.slice(0, idx), this.props, lastLeftOffset + 1))
-
-      let style = this._slotStyle(startSlot, endSlot, lastLeftOffset)
-
-      let title = get(event, titleAccessor)
-      let label = localizer.format({ start, end }, eventTimeRangeFormat, culture);
-      let _isSelected = isSelected(event, selected);
-
-      if (eventPropGetter)
-        var { style: xStyle, className } = eventPropGetter(event, start, end, _isSelected);
-
       return (
-        <div
-          key={'evt_' + idx}
-          style={{...xStyle, ...style}}
-          title={label + ': ' + title }
-          onClick={this._select.bind(null, event)}
-          className={cn('rbc-event', className, {
-            'rbc-selected': _isSelected,
-            'rbc-event-overlaps': lastLeftOffset !== 0
-          })}
-        >
-          <div className='rbc-event-label'>{label}</div>
-          <div className='rbc-event-content'>
-            { EventComponent
-              ? <EventComponent event={event} title={title}/>
-              : title
-            }
-          </div>
-        </div>
+        <DaySlotEvent {...this.props} event={event} idx={idx} key={Math.random()} _slotStyle={this._slotStyle} _select={this._select} />
       )
     })
   },
@@ -188,6 +144,12 @@ let DaySlot = React.createClass({
       [isRtl ? 'right' : 'left']: per + '%',
       width: (leftOffset === 0 ? (100 - eventOffset) : (100 - per) - rightDiff) + '%'
     }
+  },
+
+
+  _select(event){
+    clearTimeout(this._clickTimer);
+    notify(this.props.onSelectEvent, event)
   },
 
   _selectable(){
@@ -286,11 +248,6 @@ let DaySlot = React.createClass({
       end: endDate
     })
   },
-
-  _select(event){
-    clearTimeout(this._clickTimer);
-    notify(this.props.onSelectEvent, event)
-  }
 });
 
 

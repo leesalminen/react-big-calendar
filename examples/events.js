@@ -31,7 +31,7 @@ export default [
     "title": "Lunch",
     "start":new Date(2015, 3, 12, 12, 0, 0, 0),
     "end": new Date(2015, 3, 12, 13, 0, 0, 0),
-    desc: 'Power lunch'
+    desc: 'Lee lunch'
   },
   {
     "title": "Meeting",
@@ -50,7 +50,7 @@ export default [
     "end": new Date(2015, 3, 12, 21, 0, 0, 0)
   },
   {
-    "title": "Birthday Party",
+    "title": "Lee Party",
     "start":new Date(2015, 3, 13, 7, 0, 0),
     "end": new Date(2015, 3, 13, 10, 30, 0)
   }
