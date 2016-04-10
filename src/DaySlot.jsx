@@ -39,7 +39,8 @@ let DaySlot = React.createClass({
 
     onSelecting: React.PropTypes.func,
     onSelectSlot: React.PropTypes.func.isRequired,
-    onSelectEvent: React.PropTypes.func.isRequired
+    onSelectEvent: React.PropTypes.func.isRequired,
+    onDropEvent: React.PropTypes.func.isRequired,
   },
 
   getInitialState() {
@@ -66,14 +67,17 @@ let DaySlot = React.createClass({
   render() {
     let {
         min, max, step, start, end
-      , selectRangeFormat, culture, ...props } = this.props;
+      , selectRangeFormat, culture, onDropEvent, ...props } = this.props;
 
     let totalMin = dates.diff(min, max, 'minutes')
     let numSlots = Math.ceil(totalMin / step)
+    let date = min;
     let children = [];
 
     for (var i = 0; i < numSlots; i++) {
-      children.push(Math.random())
+      let next = dates.add(date, step, 'minutes');
+      children.push(date)
+      date = next;
     }
 
     this._totalMin = totalMin;
@@ -91,7 +95,7 @@ let DaySlot = React.createClass({
         { 
           children.map((child, idx) => {
             return (
-              <DaySlotContainer key={child} />
+              <DaySlotContainer key={idx} date={child} onDropEvent={onDropEvent} />
             )
           }) 
         }

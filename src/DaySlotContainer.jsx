@@ -45,8 +45,12 @@ const target = {
     }
 
     // Obtain the dragged item
-    const item = monitor.getItem();
+    const item = _.cloneDeep(monitor.getItem());
     console.log('dropped');
+
+    item.new_start = props.date;
+
+    props.onDropEvent(item);
 
     // You can also do nothing and return a drop result,
     // which will be available as monitor.getDropResult()

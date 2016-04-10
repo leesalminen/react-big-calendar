@@ -380,6 +380,7 @@ let Calendar = React.createClass({
           onSelectEvent={this._select}
           onSelectSlot={this._selectSlot}
           onShowMore={this._showMore}
+          onDropEvent={this._dropEvent}
         />
       </div>
     );
@@ -415,6 +416,11 @@ let Calendar = React.createClass({
 
   _selectSlot(slotInfo){
     notify(this.props.onSelectSlot, slotInfo)
+  },
+
+  _dropEvent(event){
+    console.log('drop event trigger');
+    notify(this.props.onDropEvent, event)
   },
 
   _headerClick(date){

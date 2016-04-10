@@ -15,6 +15,7 @@ import { DragSource } from 'react-dnd';
 import ItemTypes from './utils/itemTypes';
 
 const eventSource = {
+
   beginDrag(props) {
     return {
       event: props.event

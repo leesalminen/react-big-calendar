@@ -26,7 +26,7 @@ let EventCell = React.createClass({
       <div
         {...props}
         style={{...props.style, ...style}}
-        className={cn('rbc-event', className, xClassName, {
+        className={cn('rbc-event leePoop', className, xClassName, {
           'rbc-selected': selected,
           'rbc-event-allday': isAllDay || dates.diff(start, dates.ceil(end, 'day'), 'day') > 1,
           'rbc-event-continues-prior': continuesPrior,
